@@ -6,6 +6,10 @@
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/1724/badge)](https://bestpractices.coreinfrastructure.org/projects/1724)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=vitessio&metric=coverage)](https://sonarcloud.io/dashboard?id=vitessio)
 
+# DEPRECATED
+
+This repo has moved to https://github.com/slackhq/vitess
+
 # Vitess 
 
 Vitess is a database clustering system for horizontal scaling of MySQL

@@ -135,3 +135,95 @@ func TestRows(t *testing.T) {
 
 	_ = ri.Close()
 }
+
+func TestColumnTypeScanType(t *testing.T) {
+	var r = sqltypes.Result{
+		Fields: []*querypb.Field{
+			{
+				Name: "field1",
+				Type: sqltypes.Int8,
+			},
+			{
+				Name: "field2",
+				Type: sqltypes.Uint8,
+			},
+			{
+				Name: "field3",
+				Type: sqltypes.Int16,
+			},
+			{
+				Name: "field4",
+				Type: sqltypes.Uint16,
+			},
+			{
+				Name: "field5",
+				Type: sqltypes.Int24,
+			},
+			{
+				Name: "field6",
+				Type: sqltypes.Uint24,
+			},
+			{
+				Name: "field7",
+				Type: sqltypes.Int32,
+			},
+			{
+				Name: "field8",
+				Type: sqltypes.Uint32,
+			},
+			{
+				Name: "field9",
+				Type: sqltypes.Int64,
+			},
+			{
+				Name: "field10",
+				Type: sqltypes.Uint64,
+			},
+			{
+				Name: "field11",
+				Type: sqltypes.Float32,
+			},
+			{
+				Name: "field12",
+				Type: sqltypes.Float64,
+			},
+			{
+				Name: "field13",
+				Type: sqltypes.VarBinary,
+			},
+			{
+				Name: "field14",
+				Type: sqltypes.Datetime,
+			},
+		},
+		RowsAffected: 0,
+		InsertID:     0,
+		Rows:         [][]sqltypes.Value{},
+	}
+
+	ri := newRows(&r, &converter{}).(driver.RowsColumnTypeScanType)
+	wantTypes := []reflect.Type{
+		typeInt8,
+		typeUint8,
+		typeInt16,
+		typeUint16,
+		typeInt32,
+		typeUint32,
+		typeInt32,
+		typeUint32,
+		typeInt64,
+		typeUint64,
+		typeFloat32,
+		typeFloat64,
+		typeRawBytes,
+		typeTime,
+	}
+
+	for i := 0; i < len(wantTypes); i++ {
+		if ri.ColumnTypeScanType(i) != wantTypes[i] {
+			t.Errorf("unexpected type %v, wanted %v", ri.ColumnTypeScanType(i), wantTypes[i])
+		}
+	}
+
+	_ = ri.Close()
+}

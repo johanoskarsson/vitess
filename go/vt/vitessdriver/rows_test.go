@@ -18,10 +18,12 @@ package vitessdriver
 
 import (
 	"database/sql/driver"
+	"fmt"
 	"io"
 	"reflect"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"vitess.io/vitess/go/sqltypes"
@@ -196,12 +198,11 @@ func TestColumnTypeScanType(t *testing.T) {
 				Type: sqltypes.Datetime,
 			},
 		},
-		RowsAffected: 0,
-		InsertID:     0,
-		Rows:         [][]sqltypes.Value{},
 	}
 
 	ri := newRows(&r, &converter{}).(driver.RowsColumnTypeScanType)
+	defer ri.Close()
+
 	wantTypes := []reflect.Type{
 		typeInt8,
 		typeUint8,
@@ -220,10 +221,6 @@ func TestColumnTypeScanType(t *testing.T) {
 	}
 
 	for i := 0; i < len(wantTypes); i++ {
-		if ri.ColumnTypeScanType(i) != wantTypes[i] {
-			t.Errorf("unexpected type %v, wanted %v", ri.ColumnTypeScanType(i), wantTypes[i])
-		}
+		assert.Equal(t, ri.ColumnTypeScanType(i), wantTypes[i], fmt.Sprintf("unexpected type %v, wanted %v", ri.ColumnTypeScanType(i), wantTypes[i]))
 	}
-
-	_ = ri.Close()
 }
